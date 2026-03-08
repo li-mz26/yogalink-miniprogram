@@ -1,0 +1,95 @@
+<!-- 老师端首页 -->
+<!-- 欢迎横幅 -->
+<view class="hero-section teacher">
+  <view class="hero-content">
+    <text class="greeting">{{greeting}}，{{userInfo.nickname || '瑜伽老师'}}</text>
+    <text class="subtitle">管理您的授课时间和地点</text>
+  </view>
+</view>
+
+<!-- 快捷入口 -->
+<view class="quick-actions">
+  <view class="action-item" bindtap="goToAvailability">
+    <view class="action-icon">📅</view>
+    <text class="action-text">设置时间</text>
+  </view>
+  
+  <view class="action-item" bindtap="goToLocations">
+    <view class="action-icon">📍</view>
+    <text class="action-text">设置地点</text>
+  </view>
+  
+  <view class="action-item" bindtap="goToProfile">
+    <view class="action-icon">👤</view>
+    <text class="action-text">个人资料</text>
+  </view>
+  
+  <view class="action-item" bindtap="goToBookingRequests">
+    <view class="action-icon badge">📋</view>
+    <text class="action-text">预约请求</text>
+  </view>
+</view>
+
+<!-- 今日预约请求 -->
+<view class="section">
+  <view class="section-header">
+    <text class="section-title">最新预约请求</text>
+    <view class="section-more" bindtap="goToBookingRequests">
+      <text>全部</text>
+      <text class="arrow">></text>
+    </view>
+  </view>
+  
+  <view class="request-list" wx:if="{{bookingRequests.length > 0}}">
+    <view 
+      class="request-card {{item.status}}"
+      wx:for="{{bookingRequests}}"
+      wx:key="id"
+    >
+      <view class="request-header">
+        <image class="student-avatar" src="{{item.student.avatar || '/images/avatar_default.png'}}"/>
+        <view class="student-info">
+          <text class="student-name">{{item.student.nickname}}</text>
+          <text class="request-time">{{item.date}} {{item.start_time}}</text>
+        </view>
+        <view class="status-tag {{item.status}}">
+          {{statusText[item.status]}}
+        </view>
+      </view>
+      
+      <view class="request-location">
+        <text>📍 {{item.location.name}}</text>
+      </view>
+      
+      <view class="request-actions" wx:if="{{item.status === 'pending'}}">
+        <button class="btn-reject" size="mini" bindtap="rejectRequest" data-id="{{item.id}}">拒绝</button>
+        <button class="btn-accept" size="mini" bindtap="acceptRequest" data-id="{{item.id}}">接受</button>
+      </view>
+    </view>
+  </view>
+  
+  <view class="empty-state" wx:else>
+    <text class="empty-text">暂无新的预约请求</text>
+  </view>
+</view>
+
+<!-- 我的授课地点 -->
+<view class="section">
+  <view class="section-header">
+    <text class="section-title">我的授课地点</text>
+    <view class="section-more" bindtap="goToLocations">
+      <text>管理</text>
+      <text class="arrow">></text>
+    </view>
+  </view>
+  
+  <view class="location-list" wx:if="{{locations.length > 0}}">
+    <view class="location-tag" wx:for="{{locations}}" wx:key="id">
+      <text>{{item.name}} ({{item.radius_km}}km)</text>
+    </view>
+  </view>
+  
+  <view class="empty-text" wx:else>
+    <text>还没有设置授课地点</text>
+  </view>
+</view>

@@ -1,3 +1,4 @@
+// utils/api.js
 const { API_BASE_URL, REQUEST_TIMEOUT } = require('./config')
 
 // 请求拦截
@@ -22,45 +23,23 @@ const request = (options) => {
           if (data.code === 0) {
             resolve(data.data)
           } else if (data.code === 401) {
-            // 登录过期，清除登录态并跳转登录页
             app.clearAuth()
-            wx.showToast({
-              title: '登录已过期',
-              icon: 'none'
-            })
+            wx.showToast({ title: '登录已过期', icon: 'none' })
             setTimeout(() => {
-              wx.navigateTo({
-                url: '/pages/login/login'
-              })
+              wx.navigateTo({ url: '/pages/login/login' })
             }, 1500)
             reject(new Error('登录已过期'))
           } else {
-            wx.showToast({
-              title: data.message || '请求失败',
-              icon: 'none'
-            })
+            wx.showToast({ title: data.message || '请求失败', icon: 'none' })
             reject(new Error(data.message))
           }
-        } else if (res.statusCode === 401) {
-          app.clearAuth()
-          wx.showToast({
-            title: '登录已过期',
-            icon: 'none'
-          })
-          reject(new Error('登录已过期'))
         } else {
-          wx.showToast({
-            title: `请求失败 (${res.statusCode})`,
-            icon: 'none'
-          })
+          wx.showToast({ title: `请求失败 (${res.statusCode})`, icon: 'none' })
           reject(new Error(`HTTP ${res.statusCode}`))
         }
       },
       fail: (err) => {
-        wx.showToast({
-          title: '网络请求失败',
-          icon: 'none'
-        })
+        wx.showToast({ title: '网络请求失败', icon: 'none' })
         reject(err)
       }
     })
@@ -71,89 +50,67 @@ const request = (options) => {
 const api = {
   // 用户认证
   auth: {
-    // 登录
-    login: (data) => request({
-      url: '/v1/auth/login',
+    login: (data) => request({ url: '/v1/auth/login', method: 'POST', data }),
+    register: (data) => request({ url: '/v1/auth/register', method: 'POST', data }),
+    getProfile: () => request({ url: '/v1/user/profile', method: 'GET' })
+  },
+
+  // 老师端 API
+  teacher: {
+    // 资料管理
+    getProfile: () => request({ url: '/v1/teacher/profile', method: 'GET' }),
+    updateProfile: (data) => request({ url: '/v1/teacher/profile', method: 'POST', data }),
+    
+    // 可用时间
+    getAvailability: (date) => request({ 
+      url: '/v1/teacher/availability', 
+      method: 'GET',
+      data: date ? { date } : {}
+    }),
+    setAvailability: (data) => request({ url: '/v1/teacher/availability', method: 'POST', data }),
+    
+    // 授课地点
+    getLocations: () => request({ url: '/v1/teacher/locations', method: 'GET' }),
+    setLocations: (data) => request({ url: '/v1/teacher/locations', method: 'POST', data }),
+    
+    // 预约请求
+    getBookingRequests: (status) => request({ 
+      url: '/v1/teacher/booking-requests', 
+      method: 'GET',
+      data: status ? { status } : {}
+    }),
+    acceptRequest: (id, data) => request({ 
+      url: `/v1/teacher/booking-requests/${id}/accept`, 
       method: 'POST',
       data
     }),
-    
-    // 注册
-    register: (data) => request({
-      url: '/v1/auth/register',
+    rejectRequest: (id, data) => request({ 
+      url: `/v1/teacher/booking-requests/${id}/reject`, 
       method: 'POST',
       data
-    }),
-    
-    // 获取用户信息
-    getProfile: () => request({
-      url: '/v1/users/me',
-      method: 'GET'
     })
   },
 
-  // 课程相关
-  courses: {
-    // 获取课程列表
-    getList: (params = {}) => request({
-      url: '/v1/courses',
+  // 学生端 API
+  student: {
+    // 搜索附近老师
+    findNearbyTeachers: (params) => request({ 
+      url: '/v1/teachers/nearby', 
       method: 'GET',
       data: params
     }),
     
-    // 获取课程详情
-    getDetail: (id) => request({
-      url: `/v1/courses/${id}`,
-      method: 'GET'
-    })
-  },
-
-  // 预约相关
-  bookings: {
-    // 创建预约
-    create: (data) => request({
-      url: '/v1/bookings',
+    // 预约请求
+    createBookingRequest: (data) => request({ 
+      url: '/v1/student/booking-request', 
       method: 'POST',
       data
     }),
-    
-    // 获取我的预约列表
-    getList: (params = {}) => request({
-      url: '/v1/bookings',
-      method: 'GET',
-      data: params
-    }),
-    
-    // 取消预约
-    cancel: (id) => request({
-      url: `/v1/bookings/${id}/cancel`,
-      method: 'POST'
-    }),
-    
-    // 获取预约详情
-    getDetail: (id) => request({
-      url: `/v1/bookings/${id}`,
-      method: 'GET'
-    })
-  },
-
-  // 场馆相关
-  studios: {
-    // 获取场馆列表
-    getList: (params = {}) => request({
-      url: '/v1/studios',
-      method: 'GET',
-      data: params
-    }),
-    
-    // 获取场馆详情
-    getDetail: (id) => request({
-      url: `/v1/studios/${id}`,
+    getMyBookingRequests: () => request({ 
+      url: '/v1/student/booking-requests', 
       method: 'GET'
     })
   }
 }
 
-module.exports = {
-  api
-}
+module.exports = { api }

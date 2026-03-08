@@ -1,0 +1,111 @@
+<!-- 学生端首页 -->
+<!-- 欢迎横幅 -->
+<view class="hero-section">
+  <view class="hero-content">
+    <text class="greeting">{{greeting}}，{{userInfo.nickname || '瑜伽爱好者'}}</text>
+    <text class="subtitle">寻找附近的瑜伽老师</text>
+  </view>
+</view>
+
+<!-- 位置搜索 -->
+<view class="search-section card">
+  <view class="search-input" bindtap="chooseLocation">
+    <text class="search-icon">📍</text>
+    <text class="search-text {{searchLocation ? '' : 'placeholder'}}">
+      {{searchLocation || '点击选择上课地点'}}
+    </text>
+  </view>
+  
+  <view class="search-filters">
+    <view class="filter-item">
+      <text class="filter-label">搜索范围</text>
+      <picker bindchange="onRadiusChange" value="{{radiusIndex}}" range="{{radiusOptions}}">
+        <view class="filter-value">{{radiusOptions[radiusIndex]}}</view>
+      </picker>
+    </view>
+    
+    <button class="btn-search" bindtap="searchTeachers" disabled="{{!searchLocation}}">
+      搜索老师
+    </button>
+  </view>
+</view>
+
+<!-- 附近的老师 -->
+<view class="section" wx:if="{{teachers.length > 0}}">
+  <view class="section-header">
+    <text class="section-title">附近推荐老师</text>
+    <text class="section-subtitle">共 {{teachers.length}} 位</text>
+  </view>
+  
+  <view class="teacher-list">
+    <view 
+      class="teacher-card"
+      wx:for="{{teachers}}"
+      wx:key="teacher_id"
+      bindtap="goToTeacherDetail"
+      data-id="{{item.teacher_id}}"
+    >
+      <image class="teacher-avatar" src="{{item.avatar || '/images/avatar_default.png'}}"/>
+      
+      <view class="teacher-info">
+        <view class="teacher-header">
+          <text class="teacher-name">{{item.nickname}}</text>
+          <view class="teacher-rating">
+            <text>⭐ {{item.rating}}</text>
+            <text>({{item.total_reviews}})</text>
+          </view>
+        </view>
+        
+        <text class="teacher-bio" wx:if="{{item.bio}}">{{item.bio}}</text>
+        
+        <view class="teacher-tags" wx:if="{{item.specialties}}">
+          <text class="tag" wx:for="{{item.specialties}}" wx:key="index">{{item}}</text>
+        </view>
+        
+        <view class="teacher-footer">
+          <view class="teacher-distance">
+            <text>📍 距离 {{item.distance < 1 ? (item.distance * 1000).toFixed(0) + 'm' : item.distance.toFixed(1) + 'km'}}</text>
+          </view>
+          
+          <text class="teacher-price">¥{{item.hourly_rate}}/小时</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 我的预约 -->
+<view class="section">
+  <view class="section-header">
+    <text class="section-title">我的预约</text>
+    <view class="section-more" bindtap="goToBookings">
+      <text>全部</text>
+      <text class="arrow">></text>
+    </view>
+  </view>
+  
+  <view class="booking-list" wx:if="{{myBookings.length > 0}}">
+    <view 
+      class="booking-item"
+      wx:for="{{myBookings}}"
+      wx:key="id"
+    >
+      <image class="booking-avatar" src="{{item.teacher.avatar || '/images/avatar_default.png'}}"/>
+      
+      <view class="booking-info">
+        <text class="booking-teacher">{{item.teacher.nickname}}</text>
+        <text class="booking-time">{{item.date}} {{item.start_time}}</text>
+        <text class="booking-location">📍 {{item.location.name}}</text>
+      </view>
+      
+      <view class="booking-status {{item.status}}">
+        {{bookingStatusMap[item.status].text}}
+      </view>
+    </view>
+  </view>
+  
+  <view class="empty-state" wx:else>
+    <text class="empty-text">暂无预约</text>
+    <button class="btn btn-secondary" bindtap="quickSearch">立即找老师</button>
+  </view>
+</view>

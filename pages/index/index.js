@@ -1,40 +1,58 @@
 // pages/index/index.js
 const { api } = require('../../utils/api')
-const { formatDate, getWeekDay } = require('../../utils/util')
+const { formatDate } = require('../../utils/util')
 
 Page({
   data: {
     greeting: '',
     userInfo: null,
     isLogin: false,
-    today: '',
-    todayCourses: [],
-    studios: [],
-    stats: {
-      upcoming: 0,
-      completed: 0,
-      total: 0
+    
+    // 老师端数据
+    bookingRequests: [],
+    locations: [],
+    statusText: {
+      pending: '待确认',
+      accepted: '已接受',
+      rejected: '已拒绝',
+      cancelled: '已取消',
+      completed: '已完成'
     },
-    loading: false
+    
+    // 学生端数据
+    searchLocation: '',
+    searchLat: null,
+    searchLng: null,
+    radiusIndex: 2,
+    radiusOptions: ['1公里', '3公里', '5公里', '10公里', '20公里'],
+    radiusValues: [1, 3, 5, 10, 20],
+    teachers: [],
+    myBookings: [],
+    bookingStatusMap: {
+      pending: { text: '待确认', color: '#faad14' },
+      accepted: { text: '已接受', color: '#52c41a' },
+      rejected: { text: '已拒绝', color: '#999' },
+      cancelled: { text: '已取消', color: '#999' },
+      completed: { text: '已完成', color: '#7B68EE' }
+    }
   },
 
   onLoad() {
     this.setGreeting()
-    this.setToday()
     this.checkLoginStatus()
   },
 
   onShow() {
-    // 每次显示页面时刷新数据
     this.checkLoginStatus()
-    this.loadTodayCourses()
-    this.loadStudios()
     if (this.data.isLogin) {
-      this.loadStats()
+      if (this.data.userInfo.role === 'teacher') {
+        this.loadTeacherData()
+      } else {
+        this.loadStudentData()
+      }
     }
   },
 
-  // 设置问候语
   setGreeting() {
     const hour = new Date().getHours()
     let greeting = ''
@@ -44,164 +62,160 @@ Page({
     else if (hour < 14) greeting = '中午好'
     else if (hour < 18) greeting = '下午好'
     else greeting = '晚上好'
-    
     this.setData({ greeting })
   },
 
-  // 设置今日日期
-  setToday() {
-    const today = formatDate(new Date(), 'YYYY-MM-DD')
-    this.setData({ today })
-  },
-
-  // 检查登录状态
   checkLoginStatus() {
     const app = getApp()
     const userInfo = app.getUserInfo()
     const token = app.globalData.token
-    
     this.setData({
       isLogin: !!token,
       userInfo: userInfo || {}
     })
   },
 
-  // 加载今日课程
-  async loadTodayCourses() {
-    this.setData({ loading: true })
-    
+  // ===== 老师端方法 =====
+  async loadTeacherData() {
+    this.loadBookingRequests()
+    this.loadLocations()
+  },
+
+  async loadBookingRequests() {
     try {
-      const res = await api.courses.getList({
-        date: this.data.today,
-        page: 1,
-        page_size: 5
-      })
-      
-      this.setData({
-        todayCourses: res.list || [],
-        loading: false
-      })
+      const res = await api.teacher.getBookingRequests('pending')
+      this.setData({ bookingRequests: res.list || [] })
     } catch (error) {
-      console.error('加载课程失败:', error)
-      this.setData({ loading: false })
+      console.error('加载预约请求失败:', error)
     }
   },
 
-  // 加载场馆列表
-  async loadStudios() {
+  async loadLocations() {
     try {
-      const res = await api.studios.getList({
-        page: 1,
-        page_size: 10
-      })
-      
-      this.setData({
-        studios: res.list || []
-      })
+      const res = await api.teacher.getLocations()
+      this.setData({ locations: res.list || [] })
     } catch (error) {
-      console.error('加载场馆失败:', error)
+      console.error('加载授课地点失败:', error)
     }
   },
 
-  // 加载统计数据
-  async loadStats() {
-    try {
-      const res = await api.bookings.getList({
-        page: 1,
-        page_size: 100
-      })
-      
-      const bookings = res.list || []
-      const upcoming = bookings.filter(b => b.status === 2).length
-      const completed = bookings.filter(b => b.status === 3 || b.status === 4).length
-      
-      this.setData({
-        'stats.upcoming': upcoming,
-        'stats.completed': completed,
-        'stats.total': bookings.length
-      })
-    } catch (error) {
-      console.error('加载统计失败:', error)
-    }
-  },
-
-  // 跳转到登录页
-  goToLogin() {
-    wx.navigateTo({
-      url: '/pages/login/login'
-    })
-  },
-
-  // 跳转到课程列表
-  goToCourses() {
-    wx.switchTab({
-      url: '/pages/courses/courses'
-    })
-  },
-
-  // 跳转到课程详情
-  goToCourseDetail(e) {
+  async acceptRequest(e) {
     const { id } = e.currentTarget.dataset
-    wx.navigateTo({
-      url: `/pages/course-detail/course-detail?id=${id}`
+    try {
+      await api.teacher.acceptRequest(id, {})
+      wx.showToast({ title: '已接受', icon: 'success' })
+      this.loadBookingRequests()
+    } catch (error) {
+      console.error('接受失败:', error)
+    }
+  },
+
+  async rejectRequest(e) {
+    const { id } = e.currentTarget.dataset
+    try {
+      await api.teacher.rejectRequest(id, {})
+      wx.showToast({ title: '已拒绝', icon: 'success' })
+      this.loadBookingRequests()
+    } catch (error) {
+      console.error('拒绝失败:', error)
+    }
+  },
+
+  goToAvailability() {
+    wx.navigateTo({ url: '/pages/teacher/availability/availability' })
+  },
+
+  goToLocations() {
+    wx.navigateTo({ url: '/pages/teacher/locations/locations' })
+  },
+
+  goToBookingRequests() {
+    wx.navigateTo({ url: '/pages/teacher/requests/requests' })
+  },
+
+  goToProfile() {
+    wx.navigateTo({ url: '/pages/teacher/profile/profile' })
+  },
+
+  // ===== 学生端方法 =====
+  async loadStudentData() {
+    this.loadMyBookings()
+  },
+
+  async loadMyBookings() {
+    try {
+      const res = await api.student.getMyBookingRequests()
+      this.setData({ myBookings: res.list || [] })
+    } catch (error) {
+      console.error('加载预约失败:', error)
+    }
+  },
+
+  chooseLocation() {
+    wx.chooseLocation({
+      success: (res) => {
+        this.setData({
+          searchLocation: res.name,
+          searchLat: res.latitude,
+          searchLng: res.longitude
+        })
+        this.searchTeachers()
+      }
     })
   },
 
-  // 预约课程
-  async bookCourse(e) {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        this.goToLogin()
-      }, 1500)
+  onRadiusChange(e) {
+    this.setData({ radiusIndex: e.detail.value })
+  },
+
+  async searchTeachers() {
+    if (!this.data.searchLat || !this.data.searchLng) {
+      wx.showToast({ title: '请先选择地点', icon: 'none' })
       return
     }
 
-    const { id } = e.currentTarget.dataset
-    
-    wx.showLoading({ title: '预约中...' })
-    
+    wx.showLoading({ title: '搜索中...' })
+
     try {
-      await api.bookings.create({
-        schedule_id: id
+      const res = await api.student.findNearbyTeachers({
+        lat: this.data.searchLat,
+        lng: this.data.searchLng,
+        radius: this.data.radiusValues[this.data.radiusIndex]
       })
-      
+      this.setData({ teachers: res.list || [] })
       wx.hideLoading()
-      wx.showToast({
-        title: '预约成功',
-        icon: 'success'
-      })
-      
-      // 刷新数据
-      this.loadTodayCourses()
-      this.loadStats()
     } catch (error) {
       wx.hideLoading()
-      console.error('预约失败:', error)
+      console.error('搜索失败:', error)
     }
   },
 
-  // 跳转到场馆详情
-  goToStudio(e) {
+  goToTeacherDetail(e) {
     const { id } = e.currentTarget.dataset
-    // TODO: 实现场馆详情页
-    wx.showToast({
-      title: '场馆详情开发中',
-      icon: 'none'
-    })
+    wx.navigateTo({ url: `/pages/student/teacher-detail/teacher-detail?id=${id}` })
   },
 
-  // 下拉刷新
+  goToBookings() {
+    wx.switchTab({ url: '/pages/bookings/bookings' })
+  },
+
+  quickSearch() {
+    this.chooseLocation()
+  },
+
+  // ===== 公共方法 =====
+  goToLogin() {
+    wx.navigateTo({ url: '/pages/login/login' })
+  },
+
   onPullDownRefresh() {
-    Promise.all([
-      this.loadTodayCourses(),
-      this.loadStudios(),
-      this.data.isLogin ? this.loadStats() : Promise.resolve()
-    ]).then(() => {
-      wx.stopPullDownRefresh()
-    })
+    if (this.data.isLogin) {
+      if (this.data.userInfo.role === 'teacher') {
+        this.loadTeacherData()
+      } else {
+        this.loadStudentData()
+      }
+    }
+    wx.stopPullDownRefresh()
   }
 })

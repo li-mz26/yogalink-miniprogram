@@ -2,7 +2,6 @@
 <view class="container">
   <!-- Logo区域 -->
   <view class="logo-section">
-    <image class="logo" src="/images/logo.png" wx:if="{{false}}"/>
     <view class="logo-placeholder">
       <text>🧘</text>
     </view>
@@ -12,10 +11,30 @@
 
   <!-- 登录表单 -->
   <view class="login-form">
+    <!-- 角色选择 -->
+    <view class="role-selector">
+      <view 
+        class="role-option {{role === 'student' ? 'active' : ''}}"
+        bindtap="selectRole"
+        data-role="student"
+      >
+        <text class="role-icon">🙋</text>
+        <text class="role-text">我是学员</text>
+      </view>
+      
+      <view 
+        class="role-option {{role === 'teacher' ? 'active' : ''}}"
+        bindtap="selectRole"
+        data-role="teacher"
+      >
+        <text class="role-icon">👨‍🏫</text>
+        <text class="role-text">我是老师</text>
+      </view>
+    </view>
+
     <!-- 手机号输入 -->
     <view class="input-group">
       <text class="input-label">手机号</text>
-      
       <input
         class="input"
         type="number"
@@ -29,7 +48,6 @@
     <!-- 密码输入 -->
     <view class="input-group">
       <text class="input-label">密码</text>
-      
       <view class="password-wrap">
         <input
           class="input"
@@ -38,7 +56,6 @@
           value="{{password}}"
           bindinput="onPasswordInput"
         />
-        
         <text class="eye-icon" bindtap="togglePassword">
           {{showPassword ? '🙈' : '🙉'}}
         </text>
@@ -64,7 +81,6 @@
     </button>
   </view>
 
-  <!-- 提示信息 -->
   <view class="tips">
     <text>新用户可直接输入手机号和密码进行注册</text>
   </view>

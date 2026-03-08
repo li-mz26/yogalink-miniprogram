@@ -1,256 +1,343 @@
 /**pages/index/index.wxss**/
-.hero-section {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  border-radius: 20rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-  color: #fff;
+/* 老师端样式 */
+.hero-section.teacher {
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF8E53 100%);
 }
 
-.hero-content {
+.quick-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+}
+
+.action-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0;
+  background: var(--surface);
+  border-radius: 16rpx;
+  margin-right: 16rpx;
 }
 
-.greeting {
+.action-item:last-child {
+  margin-right: 0;
+}
+
+.action-icon {
   font-size: 40rpx;
-  font-weight: 600;
   margin-bottom: 12rpx;
 }
 
-.subtitle {
-  font-size: 28rpx;
-  opacity: 0.9;
+.action-icon.badge {
+  position: relative;
 }
 
-/* 统计卡片 */
-.stats-card {
-  display: flex;
+.action-text {
+  font-size: 24rpx;
+  color: var(--text-primary);
+}
+
+/* 预约请求卡片 */
+.request-card {
   background: var(--surface);
   border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
-.stat-item {
-  flex: 1;
-  text-align: center;
-  border-right: 1rpx solid var(--border);
+.request-card.pending {
+  border-left: 6rpx solid var(--warning);
 }
 
-.stat-item:last-child {
-  border-right: none;
+.request-card.accepted {
+  border-left: 6rpx solid var(--success);
 }
 
-.stat-value {
-  display: block;
-  font-size: 40rpx;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: 8rpx;
+.request-card.rejected,
+.request-card.cancelled {
+  border-left: 6rpx solid #ccc;
 }
 
-.stat-label {
-  font-size: 24rpx;
-  color: var(--text-secondary);
-}
-
-/* 登录提示 */
-.login-tip {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60rpx 40rpx;
-}
-
-.tip-text {
-  font-size: 28rpx;
-  color: var(--text-secondary);
-  margin-bottom: 30rpx;
-}
-
-/* 区块样式 */
-.section {
-  margin-bottom: 30rpx;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-}
-
-.section-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.section-more {
+.request-header {
   display: flex;
   align-items: center;
-  font-size: 26rpx;
-  color: var(--text-hint);
-}
-
-.arrow {
-  margin-left: 4rpx;
-}
-
-/* 课程列表 */
-.course-item {
-  display: flex;
-  align-items: center;
-  padding: 24rpx;
   margin-bottom: 16rpx;
 }
 
-.course-time {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 100rpx;
-  padding-right: 24rpx;
-  border-right: 1rpx solid var(--border);
+.student-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 16rpx;
 }
 
-.time-start {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.time-duration {
-  font-size: 22rpx;
-  color: var(--text-hint);
-  margin-top: 4rpx;
-}
-
-.course-info {
+.student-info {
   flex: 1;
-  padding: 0 24rpx;
-  min-width: 0;
 }
 
-.course-name {
+.student-name {
   font-size: 30rpx;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 12rpx;
   display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.course-meta {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  margin-bottom: 8rpx;
-}
-
-.instructor {
+.request-time {
   font-size: 24rpx;
   color: var(--text-secondary);
+  margin-top: 4rpx;
 }
 
-.course-location {
+.status-tag {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.status-tag.pending {
+  background: rgba(250, 173, 20, 0.1);
+  color: var(--warning);
+}
+
+.status-tag.accepted {
+  background: rgba(82, 196, 26, 0.1);
+  color: var(--success);
+}
+
+.request-location {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 16rpx;
+}
+
+.request-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+}
+
+.btn-reject {
+  background: #f5f5f5;
+  color: #999;
+  border: none;
+}
+
+.btn-accept {
+  background: var(--success);
+  color: #fff;
+  border: none;
+}
+
+.location-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.location-tag {
+  padding: 12rpx 20rpx;
+  background: rgba(123, 104, 238, 0.1);
+  color: var(--primary);
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+/* 学生端样式 */
+.search-section {
+  margin-bottom: 30rpx;
+}
+
+.search-input {
   display: flex;
   align-items: center;
-  font-size: 24rpx;
+  padding: 24rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.search-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.search-text {
+  font-size: 30rpx;
+  color: var(--text-primary);
+}
+
+.search-text.placeholder {
   color: var(--text-hint);
 }
 
-.location-icon {
-  margin-right: 4rpx;
-}
-
-.location-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.course-action {
+.search-filters {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-width: 100rpx;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.price {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: var(--secondary);
-  margin-bottom: 12rpx;
+.filter-item {
+  display: flex;
+  align-items: center;
 }
 
-.btn-book {
-  width: 100rpx;
-  height: 56rpx;
-  line-height: 56rpx;
+.filter-label {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-right: 12rpx;
+}
+
+.filter-value {
+  font-size: 28rpx;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.btn-search {
+  padding: 16rpx 40rpx;
   background: var(--primary);
   color: #fff;
-  font-size: 24rpx;
-  border-radius: 28rpx;
-  text-align: center;
+  font-size: 28rpx;
+  border-radius: 32rpx;
+  border: none;
 }
 
-.btn-book.full {
+.btn-search[disabled] {
   background: #e0e0e0;
   color: #999;
 }
 
-/* 场馆横向滚动 */
-.studio-scroll {
-  white-space: nowrap;
+/* 老师卡片 */
+.teacher-list {
+  margin-bottom: 30rpx;
 }
 
-.studio-list {
-  display: inline-flex;
-  padding: 10rpx 0;
-}
-
-.studio-item {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200rpx;
-  margin-right: 20rpx;
-}
-
-.studio-item:last-child {
-  margin-right: 30rpx;
-}
-
-.studio-cover {
-  width: 180rpx;
-  height: 180rpx;
+.teacher-card {
+  display: flex;
+  background: var(--surface);
   border-radius: 16rpx;
-  overflow: hidden;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.teacher-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 24rpx;
+  background: #f5f5f5;
+}
+
+.teacher-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.teacher-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 12rpx;
 }
 
-.studio-cover image {
-  width: 100%;
-  height: 100%;
+.teacher-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.studio-name {
+.teacher-rating {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.teacher-bio {
   font-size: 26rpx;
-  color: var(--text-primary);
-  text-align: center;
-  white-space: nowrap;
+  color: var(--text-secondary);
+  margin-bottom: 12rpx;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
+  white-space: nowrap;
 }
 
-.studio-rating {
+.teacher-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.teacher-tags .tag {
+  padding: 4rpx 12rpx;
+  background: rgba(123, 104, 238, 0.1);
+  color: var(--primary);
+  border-radius: 6rpx;
   font-size: 22rpx;
+}
+
+.teacher-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teacher-distance {
+  font-size: 24rpx;
   color: var(--text-hint);
-  margin-top: 4rpx;
+}
+
+.teacher-price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+/* 我的预约 */
+.booking-item {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.booking-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 20rpx;
+}
+
+.booking-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-teacher {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.booking-time,
+.booking-location {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-bottom: 4rpx;
+}
+
+.booking-status {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
 }
