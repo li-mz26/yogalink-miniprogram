@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/courses/courses",
+    "pages/course-detail/course-detail",
+    "pages/bookings/bookings",
+    "pages/profile/profile",
+    "pages/login/login"
+  ],
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#7B68EE",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/icon_home.png",
+        "selectedIconPath": "images/icon_home_active.png"
+      },
+      {
+        "pagePath": "pages/courses/courses",
+        "text": "课程",
+        "iconPath": "images/icon_course.png",
+        "selectedIconPath": "images/icon_course_active.png"
+      },
+      {
+        "pagePath": "pages/bookings/bookings",
+        "text": "预约",
+        "iconPath": "images/icon_booking.png",
+        "selectedIconPath": "images/icon_booking_active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/icon_profile.png",
+        "selectedIconPath": "images/icon_profile_active.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#7B68EE",
+    "navigationBarTitleText": "YogaLink",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

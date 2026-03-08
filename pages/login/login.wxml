@@ -1,0 +1,72 @@
+/**pages/login/login.wxml**/
+<view class="container">
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <image class="logo" src="/images/logo.png" wx:if="{{false}}"/>
+    <view class="logo-placeholder">
+      <text>🧘</text>
+    </view>
+    <text class="app-name">YogaLink</text>
+    <text class="app-slogan">连接身心，遇见更好的自己</text>
+  </view>
+
+  <!-- 登录表单 -->
+  <view class="login-form">
+    <!-- 手机号输入 -->
+    <view class="input-group">
+      <text class="input-label">手机号</text>
+      
+      <input
+        class="input"
+        type="number"
+        maxlength="11"
+        placeholder="请输入手机号"
+        value="{{phone}}"
+        bindinput="onPhoneInput"
+      />
+    </view>
+    
+    <!-- 密码输入 -->
+    <view class="input-group">
+      <text class="input-label">密码</text>
+      
+      <view class="password-wrap"
+003e
+        <input
+          class="input"
+          type="{{showPassword ? 'text' : 'password'}}"
+          placeholder="请输入密码"
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+        
+        <text class="eye-icon" bindtap="togglePassword">
+          {{showPassword ? '🙈' : '🙉'}}
+        </text>
+      </view>
+    </view>
+    
+    <!-- 登录按钮 -->
+    <button 
+      class="btn-login {{canSubmit ? '' : 'disabled'}}"
+      disabled="{{!canSubmit || loading}}"
+      bindtap="login"
+    >
+      {{loading ? '登录中...' : '登录'}}
+    </button>
+    
+    <!-- 注册按钮 -->
+    <button 
+      class="btn-register {{canSubmit ? '' : 'disabled'}}"
+      disabled="{{!canSubmit || loading}}"
+      bindtap="register"
+    >
+      {{loading ? '注册中...' : '注册新账号'}}
+    </button>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips">
+    <text>新用户可直接输入手机号和密码进行注册</text>
+  </view>
+</view>

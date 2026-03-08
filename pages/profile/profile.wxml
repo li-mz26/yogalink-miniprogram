@@ -1,0 +1,98 @@
+/**pages/profile/profile.wxml**/
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="profile-card">
+    <view class="user-info" wx:if="{{isLogin}}">
+      <image 
+        class="avatar" 
+        src="{{userInfo.avatar || '/images/avatar_default.png'}}"
+        mode="aspectFill"
+      />
+      
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickname || '瑜伽爱好者'}}</text>
+        <text class="phone">{{userInfo.phone}}</text>
+      </view>
+    </view>
+    
+    <view class="login-prompt" wx:else
+>
+      <image class="avatar-placeholder" src="/images/avatar_default.png"/>
+      
+      <view class="login-text">
+        <text class="prompt">未登录</text>
+        <button class="btn-login" bindtap="goToLogin">点击登录</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card" wx:if="{{isLogin}}">
+    <view class="stat-item" bindtap="goToBookings"
+>
+      <text class="stat-value">{{stats.total}}</text>
+      <text class="stat-label">我的预约</text>
+    </view>
+    
+    <view class="stat-item">
+      <text class="stat-value">{{stats.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+    
+    <view class="stat-item">
+      <text class="stat-value">{{stats.upcoming}}</text>
+      <text class="stat-label">即将开始</text>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-list">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="goToBookings"
+>
+        <text class="menu-icon">📅</text>
+        <text class="menu-text">我的预约</text>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToCourses"
+>
+        <text class="menu-icon">🧘</text>
+        <text class="menu-text">浏览课程</text>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item"
+>
+        <text class="menu-icon">💬</text>
+        <text class="menu-text">联系客服</text>
+        <button class="contact-btn" open-type="contact"></button>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item"
+>
+        <text class="menu-icon">⭐</text>
+        <text class="menu-text">给个好评</text>
+        <button class="contact-btn" open-type="feedback"></button>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+    
+    <view class="menu-group" wx:if="{{isLogin}}">
+      <view class="menu-item logout" bindtap="logout"
+>
+        <text class="menu-icon">🚪</text>
+        <text class="menu-text">退出登录</text>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version">
+    <text>YogaLink v1.0.0</text>
+  </view>
+</view>

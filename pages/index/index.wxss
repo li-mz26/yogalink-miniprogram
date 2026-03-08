@@ -1,0 +1,256 @@
+/**pages/index/index.wxss**/
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  color: #fff;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.greeting {
+  font-size: 40rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 统计卡片 */
+.stats-card {
+  display: flex;
+  background: var(--surface);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+  border-right: 1rpx solid var(--border);
+}
+
+.stat-item:last-child {
+  border-right: none;
+}
+
+.stat-value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+/* 登录提示 */
+.login-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 40rpx;
+}
+
+.tip-text {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  margin-bottom: 30rpx;
+}
+
+/* 区块样式 */
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.section-more {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: var(--text-hint);
+}
+
+.arrow {
+  margin-left: 4rpx;
+}
+
+/* 课程列表 */
+.course-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.course-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100rpx;
+  padding-right: 24rpx;
+  border-right: 1rpx solid var(--border);
+}
+
+.time-start {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.time-duration {
+  font-size: 22rpx;
+  color: var(--text-hint);
+  margin-top: 4rpx;
+}
+
+.course-info {
+  flex: 1;
+  padding: 0 24rpx;
+  min-width: 0;
+}
+
+.course-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 12rpx;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.instructor {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.course-location {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.location-icon {
+  margin-right: 4rpx;
+}
+
+.location-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 100rpx;
+}
+
+.price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 12rpx;
+}
+
+.btn-book {
+  width: 100rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  background: var(--primary);
+  color: #fff;
+  font-size: 24rpx;
+  border-radius: 28rpx;
+  text-align: center;
+}
+
+.btn-book.full {
+  background: #e0e0e0;
+  color: #999;
+}
+
+/* 场馆横向滚动 */
+.studio-scroll {
+  white-space: nowrap;
+}
+
+.studio-list {
+  display: inline-flex;
+  padding: 10rpx 0;
+}
+
+.studio-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200rpx;
+  margin-right: 20rpx;
+}
+
+.studio-item:last-child {
+  margin-right: 30rpx;
+}
+
+.studio-cover {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.studio-cover image {
+  width: 100%;
+  height: 100%;
+}
+
+.studio-name {
+  font-size: 26rpx;
+  color: var(--text-primary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.studio-rating {
+  font-size: 22rpx;
+  color: var(--text-hint);
+  margin-top: 4rpx;
+}

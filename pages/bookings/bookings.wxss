@@ -1,0 +1,222 @@
+/**pages/bookings/bookings.wxss**/
+/* 登录提示 */
+.login-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 60rpx;
+}
+
+.tip-text {
+  font-size: 30rpx;
+  color: var(--text-secondary);
+  margin-bottom: 40rpx;
+}
+
+/* 筛选标签 */
+.filter-tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-bottom: 30rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* 预约卡片 */
+.booking-card {
+  background: var(--surface);
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.booking-card.cancelled {
+  opacity: 0.7;
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background: #fafafa;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.booking-no {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+.status-badge {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.status-0 {
+  background: #e0e0e0;
+  color: #999;
+}
+
+.status-1 {
+  background: rgba(250, 173, 20, 0.1);
+  color: var(--warning);
+}
+
+.status-2 {
+  background: rgba(82, 196, 26, 0.1);
+  color: var(--success);
+}
+
+.status-3, .status-4 {
+  background: rgba(123, 104, 238, 0.1);
+  color: var(--primary);
+}
+
+.booking-body {
+  padding: 24rpx;
+}
+
+.course-info {
+  margin-bottom: 20rpx;
+}
+
+.course-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.course-meta {
+  display: flex;
+  gap: 12rpx;
+}
+
+.course-meta .tag {
+  padding: 4rpx 12rpx;
+  background: rgba(123, 104, 238, 0.1);
+  color: var(--primary);
+  border-radius: 6rpx;
+  font-size: 22rpx;
+}
+
+.course-meta .level {
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+}
+
+.course-meta .level-1 {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52c41a;
+}
+
+.course-meta .level-2 {
+  background: rgba(250, 173, 20, 0.1);
+  color: #faad14;
+}
+
+.course-meta .level-3 {
+  background: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+.schedule-info {
+  padding: 20rpx 0;
+  border-top: 1rpx solid var(--border);
+  border-bottom: 1rpx solid var(--border);
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row .icon {
+  font-size: 26rpx;
+  margin-right: 12rpx;
+}
+
+.info-row .text {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.booking-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+}
+
+.booking-price {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.checkin-code {
+  font-size: 24rpx;
+  color: var(--primary);
+  background: rgba(123, 104, 238, 0.1);
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.btn-cancel {
+  margin: 0;
+  padding: 8rpx 20rpx;
+  background: transparent;
+  color: var(--text-hint);
+  border: 1rpx solid var(--border);
+  font-size: 24rpx;
+  border-radius: 8rpx;
+}
+
+.btn-cancel::after {
+  border: none;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150rpx 60rpx;
+}
+
+.empty-state .empty-text {
+  font-size: 30rpx;
+  color: var(--text-hint);
+  margin-bottom: 40rpx;
+}

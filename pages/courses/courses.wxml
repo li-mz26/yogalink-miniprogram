@@ -1,0 +1,97 @@
+/**pages/courses/courses.wxml**/
+<view class="container">
+  <!-- 日期选择器 -->
+  <view class="date-selector">
+    <scroll-view class="date-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="date-list">
+        <view 
+          class="date-item {{selectedDate === item.date ? 'active' : ''}}"
+          wx:for="{{dateList}}"
+          wx:key="date"
+          bindtap="selectDate"
+          data-date="{{item.date}}"
+        >
+          <text class="day">{{item.day}}</text>
+          <text class="week">{{item.week}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list" wx:if="{{courses.length > 0}}">
+    <view 
+      class="course-card"
+      wx:for="{{courses}}"
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="course-header">
+        <image 
+          class="course-cover" 
+          src="{{item.template.cover_image || '/images/course_default.png'}}"
+          mode="aspectFill"
+        />
+        <view class="course-badges">
+          <view class="badge level-{{item.template.level}}">
+            {{item.template.level === 1 ? '初级' : item.template.level === 2 ? '中级' : '高级'}}
+          </view>
+          <view class="badge style">{{item.template.style}}</view>
+        </view>
+      </view>
+      
+      <view class="course-body">
+        <text class="course-title">{{item.template.name}}</text>
+        
+        <view class="course-info">
+          <view class="info-item">
+            <text class="info-icon">🕐</text>
+            <text class="info-text">{{item.start_time}} - {{item.end_time}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-icon">👤</text>
+            <text class="info-text">{{item.instructor.name}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-icon">📍</text>
+            <text class="info-text">{{item.studio.name}}</text>
+          </view>
+        </view>
+        
+        <view class="course-footer">
+          <view class="capacity">
+            <progress 
+              percent="{{(item.booked_count / item.max_students) * 100}}"
+              stroke-width="6"
+              color="{{item.booked_count >= item.max_students ? '#ff4d4f' : '#7B68EE'}}"
+              backgroundColor="#e0e0e0"
+            />
+            <text class="capacity-text">
+              {{item.booked_count}}/{{item.max_students}}人已预约
+            </text>
+          </view>
+          
+          <view class="course-price">
+            <text class="price">{{item.price > 0 ? '¥' + item.price : '免费'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && courses.length === 0}}">
+    <text class="empty-text">该日期暂无课程</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="load-more" wx:if="{{!loading && courses.length > 0 && !hasMore}}">
+    <text>没有更多课程了</text>
+  </view>
+</view>

@@ -1,0 +1,116 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 欢迎横幅 -->
+  <view class="hero-section">
+    <view class="hero-content">
+      <text class="greeting">{{greeting}}，{{userInfo.nickname || '瑜伽爱好者'}}</text>
+      <text class="subtitle">开启今天的瑜伽之旅</text>
+    </view>
+    <image class="hero-image" src="/images/yoga_hero.png" mode="aspectFit" wx:if="{{false}}"/>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card" wx:if="{{isLogin}}">
+    <view class="stat-item">
+      <text class="stat-value">{{stats.upcoming}}</text>
+      <text class="stat-label">即将开始</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{stats.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{stats.total}}</text>
+      <text class="stat-label">总预约</text>
+    </view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-tip card" wx:if="{{!isLogin}}">
+    <text class="tip-text">登录后即可预约课程</text>
+    <button class="btn btn-primary" bindtap="goToLogin">立即登录</button>
+  </view>
+
+  <!-- 今日课程 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">今日课程</text>
+      <view class="section-more" bindtap="goToCourses">
+        <text>全部</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 课程列表 -->
+    <view class="course-list" wx:if="{{todayCourses.length > 0}}">
+      <view 
+        class="course-item card" 
+        wx:for="{{todayCourses}}" 
+        wx:key="id"
+        bindtap="goToCourseDetail"
+        data-id="{{item.id}}"
+      >
+        <view class="course-time">
+          <text class="time-start">{{item.start_time}}</text>
+          <text class="time-duration">{{item.duration}}分钟</text>
+        </view>
+        <view class="course-info">
+          <text class="course-name">{{item.template.name}}</text>
+          <view class="course-meta">
+            <text class="tag tag-primary">{{item.style}}</text>
+            <text class="instructor">{{item.instructor.name}}</text>
+          </view>
+          <view class="course-location">
+            <text class="location-icon">📍</text>
+            <text class="location-text">{{item.studio.name}}</text>
+          </view>
+        </view>
+        <view class="course-action">
+          <text class="price">{{item.price > 0 ? '¥' + item.price : '免费'}}</text>
+          <button 
+            class="btn-book {{item.booked_count >= item.max_students ? 'full' : ''}}"
+            disabled="{{item.booked_count >= item.max_students}}"
+            catchtap="bookCourse"
+            data-id="{{item.id}}"
+          >
+            {{item.booked_count >= item.max_students ? '已满' : '预约'}}
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:elif="{{!loading}}">
+      <text class="empty-text">今日暂无课程</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 推荐场馆 -->
+  <view class="section" wx:if="{{studios.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">推荐场馆</text>
+    </view>
+    <scroll-view class="studio-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="studio-list">
+        <view 
+          class="studio-item" 
+          wx:for="{{studios}}" 
+          wx:key="id"
+          bindtap="goToStudio"
+          data-id="{{item.id}}"
+        >
+          <view class="studio-cover">
+            <image src="{{item.cover_image || '/images/studio_default.png'}}" mode="aspectFill"/>
+          </view>
+          <text class="studio-name">{{item.name}}</text>
+          <text class="studio-rating">⭐ {{item.rating}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

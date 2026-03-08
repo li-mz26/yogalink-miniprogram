@@ -1,0 +1,7 @@
+{
+  "description": "YogaLink 瑜伽约课小程序",
+  "rules": [{
+    "action": "allow",
+    "page": "*"
+  }]
+}

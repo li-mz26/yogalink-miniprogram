@@ -1,0 +1,134 @@
+/**pages/course-detail/course-detail.wxml**/
+<view class="container" wx:if="{{course.id}}">
+  <!-- 课程封面 -->
+  <view class="course-hero">
+    <image 
+      class="hero-image" 
+      src="{{course.template.cover_image || '/images/course_default.png'}}"
+      mode="aspectFill"
+    />
+    <view class="hero-overlay">
+      <view class="hero-badges">
+        <view class="badge level-{{course.template.level}}">
+          {{course.template.level === 1 ? '初级' : course.template.level === 2 ? '中级' : '高级'}}
+        </view>
+        <view class="badge style">{{course.template.style}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 课程信息 -->
+  <view class="info-section card">
+    <text class="course-name">{{course.template.name}}</text>
+    
+    <view class="info-list">
+      <view class="info-row">
+        <text class="info-label">课程时间</text>
+        <text class="info-value">
+          {{course.course_date}} {{course.start_time}} - {{course.end_time}}
+        </text>
+      </view>
+      
+      <view class="info-row">
+        <text class="info-label">课程时长</text>
+        <text class="info-value">{{course.template.duration}}分钟</text>
+      </view>
+      
+      <view class="info-row">
+        <text class="info-label">上课地点</text>
+        <text class="info-value">{{course.studio.name}}</text>
+      </view>
+      
+      <view class="info-row">
+        <text class="info-label">课程价格</text>
+        <text class="info-value price">{{course.price > 0 ? '¥' + course.price : '免费'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 教练信息 -->
+  <view class="instructor-section card">
+    <view class="section-title">授课教练</view>
+    
+    <view class="instructor-info">
+      <image 
+        class="instructor-avatar" 
+        src="{{course.instructor.avatar || '/images/avatar_default.png'}}"
+        mode="aspectFill"
+      />
+      
+      <view class="instructor-detail">
+        <text class="instructor-name">{{course.instructor.name}}</text>
+        <text class="instructor-bio" wx:if="{{course.instructor.bio}}">
+          {{course.instructor.bio}}
+        </text>
+        
+        <view class="instructor-tags" wx:if="{{course.instructor.specialties}}">
+          <text 
+            class="tag" 
+            wx:for="{{course.instructor.specialties}}"
+            wx:key="index"
+          >
+            {{item}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 课程介绍 -->
+  <view class="desc-section card" wx:if="{{course.template.description}}">
+    <view class="section-title">课程介绍</view>
+    <text class="course-desc">{{course.template.description}}</text>
+  </view>
+
+  <!-- 预约状态 -->
+  <view class="booking-section card">
+    <view class="booking-header">
+      <text class="section-title">预约情况</text>
+      
+      <text class="booking-count">
+        {{course.booked_count}}/{{course.max_students}}人已预约
+      </text>
+    </view>
+    
+    <progress 
+      percent="{{(course.booked_count / course.max_students) * 100}}"
+      stroke-width="12"
+      color="{{course.booked_count >= course.max_students ? '#ff4d4f' : '#7B68EE'}}"
+      backgroundColor="#e8e8e8"
+      show-info="{{false}}"
+    />
+    
+    <view class="booking-status" wx:if="{{course.booked_count >= course.max_students}}">
+      <text class="status-text full">该课程已满员</text>
+    </view>
+    <view class="booking-status" wx:elif="{{course.booked_count >= course.max_students * 0.8}}">
+      <text class="status-text warning">名额紧张，抓紧预约</text>
+    </view>
+    <view class="booking-status" wx:else>
+      <text class="status-text normal">名额充足</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar safe-area-bottom">
+    <view class="price-section">
+      <text class="price-label">课程价格</text>
+      <text class="price-value">{{course.price > 0 ? '¥' + course.price : '免费'}}</text>
+    </view>
+    
+    <button 
+      class="btn-book {{course.booked_count >= course.max_students ? 'disabled' : ''}}"
+      disabled="{{course.booked_count >= course.max_students || bookingLoading}}"
+      bindtap="bookCourse"
+    >
+      {{course.booked_count >= course.max_students ? '已满员' : '立即预约'}}
+    </button>
+  </view>
+</view>
+
+<!-- 加载中 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>
