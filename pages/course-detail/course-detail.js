@@ -1,5 +1,5 @@
 // pages/course-detail/course-detail.js
-import { api } from '../../utils/api'
+const { api } = require('../../utils/api')
 
 Page({
   data: {

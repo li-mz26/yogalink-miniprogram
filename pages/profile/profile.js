@@ -1,5 +1,5 @@
 // pages/profile/profile.js
-import { api } from '../../utils/api'
+const { api } = require('../../utils/api')
 
 Page({
   data: {

@@ -1,5 +1,5 @@
 // app.js
-import { API_BASE_URL } from './utils/config'
+const { API_BASE_URL } = require('./utils/config')
 
 App({
   globalData: {

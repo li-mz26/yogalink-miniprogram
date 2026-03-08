@@ -1,6 +1,6 @@
 // pages/login/login.js
-import { api } from '../../utils/api'
-import { isValidPhone, isValidPassword } from '../../utils/util'
+const { api } = require('../../utils/api')
+const { isValidPhone, isValidPassword } = require('../../utils/util')
 
 Page({
   data: {

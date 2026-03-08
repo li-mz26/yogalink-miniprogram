@@ -1,6 +1,6 @@
 // pages/courses/courses.js
-import { api } from '../../utils/api'
-import { formatDate, getWeekDay } from '../../utils/util'
+const { api } = require('../../utils/api')
+const { formatDate, getWeekDay } = require('../../utils/util')
 
 Page({
   data: {

@@ -1,6 +1,6 @@
 // pages/bookings/bookings.js
-import { api } from '../../utils/api'
-import { bookingStatusMap } from '../../utils/util'
+const { api } = require('../../utils/api')
+const { bookingStatusMap } = require('../../utils/util')
 
 Page({
   data: {

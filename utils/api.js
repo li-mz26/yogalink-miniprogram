@@ -1,4 +1,4 @@
-import { API_BASE_URL, REQUEST_TIMEOUT } from './config'
+const { API_BASE_URL, REQUEST_TIMEOUT } = require('./config')
 
 // 请求拦截
 const request = (options) => {
@@ -68,7 +68,7 @@ const request = (options) => {
 }
 
 // API 封装
-export const api = {
+const api = {
   // 用户认证
   auth: {
     // 登录
@@ -154,4 +154,6 @@ export const api = {
   }
 }
 
-export default api
+module.exports = {
+  api
+}
