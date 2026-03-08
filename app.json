@@ -5,7 +5,9 @@
     "pages/course-detail/course-detail",
     "pages/bookings/bookings",
     "pages/profile/profile",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/verification/verification",
+    "pages/face-verification/face-verification"
   ],
   "tabBar": {
     "color": "#999999",

@@ -1,0 +1,83 @@
+/**pages/face-verification/face-verification.wxml**/
+<view class="container">
+  <view class="header">
+    <text class="title">上课前人脸认证</text>
+    <text class="subtitle">请在光线充足的环境下完成</text>
+  </view>
+
+  <!-- 课程信息 -->
+  <view class="booking-info" wx:if="{{bookingInfo}}">
+    <view class="info-row">
+      <text class="label">{{userRole === 'teacher' ? '学员' : '老师'}}</text>
+      <text class="value">{{bookingInfo.partnerName}}</text>
+    </view>
+    
+    <view class="info-row">
+      <text class="label">上课时间</text>
+      <text class="value">{{bookingInfo.date}} {{bookingInfo.startTime}}</text>
+    </view>
+    
+    <view class="info-row">
+      <text class="label">上课地点</text>
+      <text class="value">{{bookingInfo.location}}</text>
+    </view>
+  </view>
+
+  <!-- 摄像头预览 -->
+  <view class="camera-container">
+    <camera 
+      wx:if="{{!capturedImage && !verified}}"
+      class="camera"
+      device-position="front"
+      flash="off"
+      resolution="high"
+    >
+      <view class="face-frame">
+        <view class="corner top-left"></view>
+        <view class="corner top-right"></view>
+        <view class="corner bottom-left"></view>
+        <view class="corner bottom-right"></view>
+      </view>
+      
+      <text class="tip-text">请将脸部对准框内</text>
+    </camera>
+
+    <image 
+      wx:if="{{capturedImage && !verified}}"
+      class="preview-image"
+      src="{{capturedImage}}"
+      mode="aspectFit"
+    />
+
+    <view class="success-view" wx:if="{{verified}}">
+      <text class="success-icon">✅</text>
+      <text class="success-text">人脸识别通过</text>
+      <text class="success-desc">可以开始上课了</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions" wx:if="{{!verified}}">
+    <block wx:if="{{!capturedImage}}">
+      <button class="btn-capture" bindtap="captureFace">拍摄</button>
+    </block>
+    
+    <block wx:else>
+      <view class="btn-group">
+        <button class="btn-retake" bindtap="retake">重拍</button>
+        <button class="btn-confirm" bindtap="verifyFace">确认</button>
+      </view>
+    </block>
+  </view>
+
+  <view class="actions" wx:if="{{verified}}">
+    <button class="btn-complete" bindtap="complete">完成</button>
+  </view>
+
+  <!-- 注意事项 -->
+  <view class="tips" wx:if="{{!verified}}">
+    <text class="tip-item">• 请确保是本人操作</text>
+    <text class="tip-item">• 避免逆光或光线过暗</text>
+    <text class="tip-item">• 请勿佩戴墨镜或口罩</text>
+  </view>
+</view>

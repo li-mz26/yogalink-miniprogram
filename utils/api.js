@@ -48,11 +48,24 @@ const request = (options) => {
 
 // API 封装
 const api = {
-  // 用户认证
+  // 实名认证
   auth: {
     login: (data) => request({ url: '/v1/auth/login', method: 'POST', data }),
     register: (data) => request({ url: '/v1/auth/register', method: 'POST', data }),
-    getProfile: () => request({ url: '/v1/user/profile', method: 'GET' })
+    getProfile: () => request({ url: '/v1/user/profile', method: 'GET' }),
+    
+    // 实名认证相关
+    getVerificationStatus: () => request({ url: '/v1/user/verification/status', method: 'GET' }),
+    submitVerification: (data) => request({ url: '/v1/user/verification', method: 'POST', data }),
+    faceVerification: (bookingId, faceImage) => request({ 
+      url: `/v1/user/face-verification/${bookingId}`, 
+      method: 'POST',
+      data: { face_image: faceImage }
+    }),
+    checkFaceVerificationStatus: (bookingId) => request({ 
+      url: `/v1/user/face-verification/${bookingId}/status`, 
+      method: 'GET'
+    })
   },
 
   // 老师端 API

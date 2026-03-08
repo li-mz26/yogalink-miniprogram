@@ -26,8 +26,20 @@
     </view>
   </view>
 
-  <!-- 统计卡片 -->
-  <view class="stats-card" wx:if="{{isLogin}}">
+  <!-- 实名认证状态 -->
+  <view class="verify-card {{verificationStatus}}" wx:if="{{isLogin}}" bindtap="goToVerification">
+    <view class="verify-icon">
+      <text wx:if="{{verificationStatus === 'verified'}}">✅</text>
+      <text wx:elif="{{verificationStatus === 'pending'}}">⏳</text>
+      <text wx:elif="{{verificationStatus === 'rejected'}}">❌</text>
+      <text wx:else>⚠️</text>
+    </view>
+    <view class="verify-info">
+      <text class="verify-title">实名认证</text>
+      <text class="verify-desc">{{verifyStatusText[verificationStatus]}}</text>
+    </view>
+    <text class="menu-arrow">></text>
+  </view>
     <view class="stat-item" bindtap="goToBookings"
 >
       <text class="stat-value">{{stats.total}}</text>

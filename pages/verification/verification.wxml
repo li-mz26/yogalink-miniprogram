@@ -1,0 +1,100 @@
+/**pages/verification/verification.wxml**/
+<view class="container">
+  <view class="header">
+    <text class="title">实名认证</text>
+    <text class="subtitle">仅限18岁以上女性用户</text>
+  </view>
+
+  <!-- 认证状态展示 -->
+  <view class="status-card {{verificationStatus}}" wx:if="{{verificationStatus !== 'unverified'}}">
+    <view class="status-icon">
+      <text wx:if="{{verificationStatus === 'verified'}}">✅</text>
+      <text wx:elif="{{verificationStatus === 'pending'}}">⏳</text>
+      <text wx:else>❌</text>
+    </view>
+    <text class="status-text">{{statusText[verificationStatus]}}</text>
+    <text class="status-desc" wx:if="{{verificationStatus === 'rejected' && rejectReason}}">
+      原因: {{rejectReason}}
+    </text>
+  </view>
+
+  <!-- 认证表单 -->
+  <view class="form-card" wx:if="{{verificationStatus === 'unverified' || verificationStatus === 'rejected'}}">
+    <view class="form-item">
+      <text class="label">真实姓名</text>
+      <input 
+        class="input" 
+        placeholder="请输入真实姓名"
+        value="{{realName}}"
+        bindinput="onRealNameInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="label">身份证号码</text>
+      <input 
+        class="input" 
+        type="idcard"
+        maxlength="18"
+        placeholder="请输入18位身份证号"
+        value="{{idCardNumber}}"
+        bindinput="onIdCardInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="label">身份证正面</text>
+      <view class="upload-box" bindtap="uploadFrontImage">
+        <image wx:if="{{idCardFront}}" src="{{idCardFront}}" mode="aspectFit"/>
+        <view class="upload-placeholder" wx:else>
+          <text class="upload-icon">📷</text>
+          <text>点击上传正面</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="label">身份证反面</text>
+      <view class="upload-box" bindtap="uploadBackImage">
+        <image wx:if="{{idCardBack}}" src="{{idCardBack}}" mode="aspectFit"/>
+        <view class="upload-placeholder" wx:else>
+          <text class="upload-icon">📷</text>
+          <text>点击上传反面</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="notice">
+      <text class="notice-title">⚠️ 注意事项</text>
+      <text class="notice-item">1. 仅支持18岁以上女性用户</text>
+      <text class="notice-item">2. 身份信息将严格保密</text>
+      <text class="notice-item">3. 审核通常需要1-3个工作日</text>
+    </view>
+
+    <button 
+      class="btn-submit {{canSubmit ? '' : 'disabled'}}"
+      disabled="{{!canSubmit || submitting}}"
+      bindtap="submitVerification"
+    >
+      {{submitting ? '提交中...' : '提交认证'}}
+    </button>
+  </view>
+
+  <!-- 已认证信息展示 -->
+  <view class="info-card" wx:if="{{verificationStatus === 'verified'}}">
+    <view class="info-item">
+      <text class="info-label">真实姓名</text>
+      <text class="info-value">{{realName}}</text>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-label">性别</text>
+      <text class="info-value">女</text>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-label">认证时间</text>
+      <text class="info-value">{{verifiedAt}}</text>
+    </view>
+  </view>
+</view>

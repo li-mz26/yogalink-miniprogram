@@ -9,6 +9,13 @@ Page({
       total: 0,
       completed: 0,
       upcoming: 0
+    },
+    verificationStatus: 'unverified',
+    verifyStatusText: {
+      unverified: '未认证 - 点击进行认证',
+      pending: '审核中 - 请耐心等待',
+      verified: '已认证',
+      rejected: '认证失败 - 点击重新认证'
     }
   },
 
@@ -21,6 +28,7 @@ Page({
     if (this.data.isLogin) {
       this.loadUserInfo()
       this.loadStats()
+      this.loadVerificationStatus()
     }
   },
 
@@ -91,6 +99,25 @@ Page({
     })
   },
 
+  // 加载实名认证状态
+  async loadVerificationStatus() {
+    try {
+      const res = await api.auth.getVerificationStatus()
+      this.setData({
+        verificationStatus: res.status || 'unverified'
+      })
+    } catch (error) {
+      console.error('加载认证状态失败:', error)
+    }
+  },
+
+  // 跳转到实名认证
+  goToVerification() {
+    wx.navigateTo({
+      url: '/pages/verification/verification'
+    })
+  },
+
   // 退出登录
   logout() {
     wx.showModal({
@@ -105,7 +132,8 @@ Page({
           this.setData({
             isLogin: false,
             userInfo: null,
-            stats: { total: 0, completed: 0, upcoming: 0 }
+            stats: { total: 0, completed: 0, upcoming: 0 },
+            verificationStatus: 'unverified'
           })
           
           wx.showToast({
