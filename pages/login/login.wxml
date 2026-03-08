@@ -30,8 +30,7 @@
     <view class="input-group">
       <text class="input-label">密码</text>
       
-      <view class="password-wrap"
-003e
+      <view class="password-wrap">
         <input
           class="input"
           type="{{showPassword ? 'text' : 'password'}}"
