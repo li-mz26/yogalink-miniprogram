@@ -182,7 +182,20 @@ Page({
         lng: this.data.searchLng,
         radius: this.data.radiusValues[this.data.radiusIndex]
       })
-      this.setData({ teachers: res.list || [] })
+      
+      // 处理距离显示格式
+      const teachers = (res.list || []).map(item => {
+        const distance = item.distance || 0
+        let distance_text
+        if (distance < 1) {
+          distance_text = Math.round(distance * 1000) + 'm'
+        } else {
+          distance_text = distance.toFixed(1) + 'km'
+        }
+        return { ...item, distance_text }
+      })
+      
+      this.setData({ teachers })
       wx.hideLoading()
     } catch (error) {
       wx.hideLoading()

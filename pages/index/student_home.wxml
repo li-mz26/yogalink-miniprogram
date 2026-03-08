@@ -64,7 +64,7 @@
         
         <view class="teacher-footer">
           <view class="teacher-distance">
-            <text>📍 距离 {{item.distance < 1 ? (item.distance * 1000).toFixed(0) + 'm' : item.distance.toFixed(1) + 'km'}}</text>
+            <text>📍 距离 {{item.distance_text}}</text>
           </view>
           
           <text class="teacher-price">¥{{item.hourly_rate}}/小时</text>
