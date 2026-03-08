@@ -40,6 +40,9 @@
     </view>
     <text class="menu-arrow">></text>
   </view>
+  
+  <!-- 统计卡片 -->
+  <view class="stats-card" wx:if="{{isLogin}}">
     <view class="stat-item" bindtap="goToBookings"
 >
       <text class="stat-value">{{stats.total}}</text>
