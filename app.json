@@ -3,6 +3,9 @@
     "pages/index/index",
     "pages/courses/courses",
     "pages/course-detail/course-detail",
+    "pages/teacher-detail/teacher-detail",
+    "pages/teacher-category/teacher-category",
+    "pages/teacher-calendar/teacher-calendar",
     "pages/bookings/bookings",
     "pages/profile/profile",
     "pages/login/login",
@@ -41,6 +44,15 @@
       }
     ]
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于搜索附近的上门瑜伽私教"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation"
+  ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#7B68EE",

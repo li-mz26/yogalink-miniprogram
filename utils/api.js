@@ -107,21 +107,63 @@ const api = {
   // 学生端 API
   student: {
     // 搜索附近老师
-    findNearbyTeachers: (params) => request({ 
-      url: '/v1/teachers/nearby', 
+    findNearbyTeachers: (params) => request({
+      url: '/v1/teachers/nearby',
       method: 'GET',
       data: params
     }),
-    
+    // 获取老师列表
+    getTeacherList: (params) => request({
+      url: '/v1/teachers',
+      method: 'GET',
+      data: params
+    }),
+    // 根据专长获取老师列表
+    getTeachersBySpecialty: (specialty, page = 1, pageSize = 20) => request({
+      url: '/v1/teachers/by-specialty',
+      method: 'GET',
+      data: { specialty, page, page_size: pageSize }
+    }),
+
     // 预约请求
-    createBookingRequest: (data) => request({ 
-      url: '/v1/student/booking-request', 
+    createBookingRequest: (data) => request({
+      url: '/v1/student/booking-request',
       method: 'POST',
       data
     }),
-    getMyBookingRequests: () => request({ 
-      url: '/v1/student/booking-requests', 
+    getMyBookingRequests: () => request({
+      url: '/v1/student/booking-requests',
       method: 'GET'
+    })
+  },
+
+  // 课程
+  courses: {
+    getList: (params) => request({
+      url: '/v1/courses',
+      method: 'GET',
+      data: params
+    }),
+    getDetail: (id) => request({
+      url: `/v1/courses/${id}`,
+      method: 'GET'
+    })
+  },
+
+  // 预约
+  bookings: {
+    getList: (params) => request({
+      url: '/v1/bookings',
+      method: 'GET',
+      data: params
+    }),
+    getDetail: (id) => request({
+      url: `/v1/bookings/${id}`,
+      method: 'GET'
+    }),
+    cancel: (id) => request({
+      url: `/v1/bookings/${id}/cancel`,
+      method: 'POST'
     })
   }
 }

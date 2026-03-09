@@ -18,6 +18,12 @@ Page({
       cancelled: '已取消',
       completed: '已完成'
     },
+    // 老师订单统计
+    stats: {
+      purchased: 0,   // 已购买
+      scheduled: 0,   // 已约课
+      reviews: 0      // 课程评价
+    },
     
     // 学生端数据
     searchLocation: '',
@@ -79,6 +85,28 @@ Page({
   async loadTeacherData() {
     this.loadBookingRequests()
     this.loadLocations()
+    this.loadTeacherStats()
+  },
+
+  // 加载老师订单统计
+  async loadTeacherStats() {
+    try {
+      // 获取老师收到的预约请求
+      const res = await api.teacher.getBookingRequests()
+      const requests = res.list || []
+
+      // 统计各状态数量
+      const accepted = requests.filter(r => r.status === 'accepted').length  // 已约课
+      const pending = requests.filter(r => r.status === 'pending').length     // 待确认
+
+      this.setData({
+        'stats.purchased': accepted + pending,  // 已购买约课
+        'stats.scheduled': accepted,           // 已约课
+        'stats.reviews': 0                    // 评价数量（待开发）
+      })
+    } catch (error) {
+      console.error('加载统计失败:', error)
+    }
   },
 
   async loadBookingRequests() {
@@ -122,7 +150,7 @@ Page({
   },
 
   goToAvailability() {
-    wx.navigateTo({ url: '/pages/teacher/availability/availability' })
+    wx.navigateTo({ url: '/pages/teacher-calendar/teacher-calendar' })
   },
 
   goToLocations() {
@@ -131,6 +159,21 @@ Page({
 
   goToBookingRequests() {
     wx.navigateTo({ url: '/pages/teacher/requests/requests' })
+  },
+
+  // 跳转已购买
+  goToPurchased() {
+    wx.showToast({ title: '已购买课程', icon: 'none' })
+  },
+
+  // 跳转已约课
+  goToScheduled() {
+    wx.navigateTo({ url: '/pages/teacher/requests/requests' })
+  },
+
+  // 跳转课程评价
+  goToReviews() {
+    wx.showToast({ title: '课程评价功能开发中', icon: 'none' })
   },
 
   goToProfile() {
@@ -152,14 +195,91 @@ Page({
   },
 
   chooseLocation() {
-    wx.chooseLocation({
+    // 先尝试获取当前位置
+    wx.showModal({
+      title: '获取位置',
+      content: '是否允许获取您的当前位置？',
+      confirmText: '允许',
+      cancelText: '手动选择',
       success: (res) => {
+        if (res.confirm) {
+          // 用户同意获取位置
+          this.getCurrentLocation()
+        } else {
+          // 用户选择手动选择
+          this.openLocationPicker()
+        }
+      }
+    })
+  },
+
+  // 获取当前位置
+  getCurrentLocation() {
+    wx.getLocation({
+      type: 'gcj02',
+      isHighAccuracy: true,
+      success: (res) => {
+        console.log('获取位置成功:', res)
+        // 逆地址解析需要腾讯地图API，这里先显示坐标位置
         this.setData({
-          searchLocation: res.name,
+          searchLocation: '当前位置',
           searchLat: res.latitude,
           searchLng: res.longitude
         })
         this.searchTeachers()
+        wx.showToast({
+          title: '定位成功',
+          icon: 'success'
+        })
+      },
+      fail: (err) => {
+        console.log('获取位置失败:', err)
+        let errMsg = '无法获取您的位置'
+        if (err.errMsg) {
+          if (err.errMsg.includes('auth deny')) {
+            errMsg = '您拒绝了位置权限授权'
+          } else if (err.errMsg.includes('permission')) {
+            errMsg = '需要您的位置权限'
+          }
+        }
+        // 获取位置失败，提示用户手动选择
+        wx.showModal({
+          title: '定位失败',
+          content: errMsg + '，请手动选择上课地点',
+          confirmText: '手动选择',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              this.openLocationPicker()
+            }
+          }
+        })
+      }
+    })
+  },
+
+  // 手动选择位置
+  openLocationPicker() {
+    wx.chooseLocation({
+      success: (res) => {
+        console.log('选择的位置:', res)
+        if (res.name && res.latitude) {
+          this.setData({
+            searchLocation: res.name,
+            searchLat: res.latitude,
+            searchLng: res.longitude
+          })
+          this.searchTeachers()
+        } else {
+          wx.showToast({
+            title: '请选择有效的位置',
+            icon: 'none'
+          })
+        }
+      },
+      fail: (err) => {
+        console.log('选择位置失败:', err)
+        // 用户取消选择
       }
     })
   },
@@ -205,7 +325,14 @@ Page({
 
   goToTeacherDetail(e) {
     const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `/pages/student/teacher-detail/teacher-detail?id=${id}` })
+    wx.navigateTo({ url: `/pages/teacher-detail/teacher-detail?id=${id}` })
+  },
+
+  goToCategory(e) {
+    const { category } = e.currentTarget.dataset
+    wx.navigateTo({
+      url: `/pages/teacher-category/teacher-category?category=${category}`
+    })
   },
 
   goToBookings() {

@@ -1,0 +1,130 @@
+<view class="container">
+  <!-- 月份选择 -->
+  <view class="month-header">
+    <view class="month-btn" bindtap="prevMonth">
+      <text>‹</text>
+    </view>
+    <view class="month-title">
+      <text>{{currentYear}}年{{currentMonth}}月</text>
+    </view>
+    <view class="month-btn" bindtap="nextMonth">
+      <text>›</text>
+    </view>
+  </view>
+
+  <!-- 每周视图 - 每天一列 -->
+  <view class="week-view">
+    <!-- 星期标题行 -->
+    <view class="week-header">
+      <view class="week-day-header" wx:for="{{weeks}}" wx:key="index">{{item}}</view>
+    </view>
+
+    <!-- 日期列 -->
+    <scroll-view class="days-scroll" scroll-x="true">
+      <view class="days-container">
+        <view
+          class="day-column {{item.today ? 'today' : ''}} {{item.hasBooking ? 'has-booking' : ''}}"
+          wx:for="{{days}}"
+          wx:key="index"
+          bindtap="selectDate"
+          data-date="{{item.date}}"
+        >
+          <view class="day-header">
+            <text class="day-week">{{weeks[item.weekDay]}}</text>
+            <text class="day-number">{{item.day}}</text>
+          </view>
+          <view class="day-content">
+            <view class="booking-count" wx:if="{{item.bookingCount > 0}}">
+              <text class="count-num">{{item.bookingCount}}</text>
+              <text class="count-text">约课</text>
+            </view>
+            <view class="no-booking" wx:else>
+              <text>暂无</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 图例 -->
+  <view class="legend">
+    <view class="legend-item">
+      <view class="legend-dot has-booking"></view>
+      <text>有约课</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-dot today-dot"></view>
+      <text>今天</text>
+    </view>
+  </view>
+
+  <!-- 底部详情 -->
+  <view class="day-detail" wx:if="{{selectedDate}}">
+    <view class="detail-header">
+      <text class="detail-date">{{selectedDate}}</text>
+      <text class="detail-tip">点击设置可用时间</text>
+    </view>
+
+    <!-- 约课情况 -->
+    <view class="detail-section">
+      <view class="section-title">约课情况</view>
+      <view class="booking-list" wx:if="{{dayBookings.length > 0}}">
+        <view class="booking-item" wx:for="{{dayBookings}}" wx:key="id">
+          <view class="booking-info">
+            <text class="student-name">{{item.student.nickname}}</text>
+            <text class="booking-time">{{item.start_time}} - {{item.end_time}}</text>
+          </view>
+          <text class="booking-status {{item.status}}">{{statusText[item.status]}}</text>
+        </view>
+      </view>
+      <view class="empty-tip" wx:else>
+        <text>暂无约课</text>
+      </view>
+    </view>
+
+    <!-- 可用时间 -->
+    <view class="detail-section">
+      <view class="section-title">
+        <text>可用时间</text>
+        <text class="add-btn" bindtap="showAddTimeModal">+ 添加</text>
+      </view>
+      <view class="time-list" wx:if="{{selectedDayInfo && selectedDayInfo.availableSlots.length > 0}}">
+        <view class="time-item" wx:for="{{selectedDayInfo.availableSlots}}" wx:key="id">
+          <text class="time-range">{{item.start_time}} - {{item.end_time}}</text>
+          <text class="delete-btn" bindtap="deleteTimeSlot" data-id="{{item.id}}">删除</text>
+        </view>
+      </view>
+      <view class="empty-tip" wx:else>
+        <text>暂无设置可用时间</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加时间弹窗 -->
+  <view class="modal-mask" wx:if="{{showTimeModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="stopModal">
+      <view class="modal-header">
+        <text class="modal-title">设置可用时间</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">开始时间</text>
+          <picker mode="time" value="{{newTimeSlot.start_time}}" bindchange="onStartTimeChange">
+            <view class="picker-value">{{newTimeSlot.start_time}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="label">结束时间</text>
+          <picker mode="time" value="{{newTimeSlot.end_time}}" bindchange="onEndTimeChange">
+            <view class="picker-value">{{newTimeSlot.end_time}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeModal">取消</button>
+        <button class="btn-confirm" bindtap="saveTimeSlot">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

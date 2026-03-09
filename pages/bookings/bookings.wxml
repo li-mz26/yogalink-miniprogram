@@ -1,115 +1,184 @@
-/**pages/bookings/bookings.wxml**/
 <view class="container">
-  <!-- 登录提示 -->
-  <view class="login-tip card" wx:if="{{!isLogin}}">
-    <text class="tip-text">登录后查看您的预约</text>
-    <button class="btn btn-primary" bindtap="goToLogin">立即登录</button>
+  <!-- 月份选择 -->
+  <view class="month-header">
+    <view class="month-btn" bindtap="prevMonth">
+      <text>‹</text>
+    </view>
+    <view class="month-title">
+      <text>{{currentYear}}年{{currentMonth}}月</text>
+    </view>
+    <view class="month-btn" bindtap="nextMonth">
+      <text>›</text>
+    </view>
   </view>
 
-  <!-- 预约列表 -->
-  <view wx:elif="{{bookings.length > 0}}">
-    <!-- 筛选标签 -->
-    <view class="filter-tabs">
-      <view 
-        class="tab {{activeTab === 'all' ? 'active' : ''}}"
-        bindtap="switchTab"
-        data-tab="all"
-      >
-        全部
-      </view>
-      
-      <view 
-        class="tab {{activeTab === 'upcoming' ? 'active' : ''}}"
-        bindtap="switchTab"
-        data-tab="upcoming"
-      >
-        即将开始
-      </view>
-      
-      <view 
-        class="tab {{activeTab === 'completed' ? 'active' : ''}}"
-        bindtap="switchTab"
-        data-tab="completed"
-      >
-        已完成
-      </view>
+  <!-- 24小时日历视图 -->
+  <view class="calendar-week">
+    <view class="week-header">
+      <view class="week-day" wx:for="{{weeks}}" wx:key="index">{{item}}</view>
     </view>
-    
-    <!-- 列表 -->
-    <view class="booking-list">
-      <view 
-        class="booking-card {{item.status === 0 ? 'cancelled' : ''}}"
-        wx:for="{{filteredBookings}}"
-        wx:key="id"
+    <view class="calendar-days">
+      <view
+        class="day-cell {{item.today ? 'today' : ''}} {{item.hasAvailability ? 'has-availability' : ''}}"
+        wx:for="{{days}}"
+        wx:key="index"
+        bindtap="selectDate"
+        data-date="{{item.date}}"
       >
-        <view class="booking-header">
-          <view class="booking-no">订单号: {{item.booking_no}}</view>
-          <view class="status-badge status-{{item.status}}">
-            {{statusMap[item.status].text}}
-          </view>
-        </view>
-        
-        <view class="booking-body">
-          <view class="course-info">
-            <text class="course-name">{{item.schedule.template.name}}</text>
-            
-            <view class="course-meta">
-              <text class="tag">{{item.schedule.template.style}}</text>
-              <text class="level level-{{item.schedule.template.level}}">
-                {{item.schedule.template.level === 1 ? '初级' : item.schedule.template.level === 2 ? '中级' : '高级'}}
-              </text>
-            </view>
-          </view>
-          
-          <view class="schedule-info">
-            <view class="info-row">
-              <text class="icon">🕐</text>
-              <text class="text">{{item.schedule.course_date}} {{item.schedule.start_time}}</text>
-            </view>
-            
-            <view class="info-row">
-              <text class="icon">👤</text>
-              <text class="text">{{item.schedule.instructor.name}}</text>
-            </view>
-            
-            <view class="info-row">
-              <text class="icon">📍</text>
-              <text class="text">{{item.schedule.studio.name}}</text>
-            </view>
-          </view>
-          
-          <view class="booking-footer">
-            <text class="booking-price">¥{{item.price}}</text>
-            
-            <view class="actions" wx:if="{{item.status === 2}}">
-              <!-- 待上课时显示签到码 -->
-              <view class="checkin-code" wx:if="{{item.checkin_code}}">
-                签到码: {{item.checkin_code}}
-              </view>
-              
-              <button 
-                class="btn-cancel" 
-                size="mini"
-                bindtap="cancelBooking"
-                data-id="{{item.id}}"
-              >
-                取消预约
-              </button>
-            </view>
-          </view>
-        </view>
+        <text class="day-number">{{item.day}}</text>
+        <view class="day-indicator" wx:if="{{item.hasAvailability && !item.empty}}"></view>
       </view>
     </view>
   </view>
 
-  <!-- 空状态 -->
-  <view class="empty-state" wx:elif="{{!loading}}">
-    <text class="empty-text">暂无预约记录</text>
-    <button class="btn btn-secondary" bindtap="goToCourses">去预约课程</button>
+  <!-- 选中日期的详情 -->
+  <view class="day-schedule" wx:if="{{selectedDate}}">
+    <view class="schedule-header">
+      <text class="schedule-date">{{selectedDate}}</text>
+      <view class="header-actions">
+        <text class="quick-set-btn" bindtap="showQuickSetModal">一键配置</text>
+      </view>
+    </view>
+
+    <!-- 24小时时间块视图 -->
+    <scroll-view class="time-blocks" scroll-y="true">
+      <view class="time-grid">
+        <view
+          class="time-block {{item.available ? 'available' : ''}} {{item.hasBooking ? 'booked' : ''}}"
+          wx:for="{{timeSlots}}"
+          wx:key="hour"
+          bindtap="toggleTimeSlot"
+          data-hour="{{item.hour}}"
+        >
+          <text class="time-label">{{item.hour}}:00</text>
+          <view class="time-status">
+            <text wx:if="{{item.available && !item.hasBooking}}">可约</text>
+            <text wx:elif="{{item.hasBooking}}">已约</text>
+            <text wx:else>-</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 当天预约列表 -->
+    <view class="booking-section">
+      <view class="section-title">当日预约</view>
+      <view class="booking-list" wx:if="{{dayBookings.length > 0}}">
+        <view class="booking-item" wx:for="{{dayBookings}}" wx:key="id">
+          <view class="booking-time-range">
+            <text class="time">{{item.start_time}} - {{item.end_time}}</text>
+            <text class="status {{item.status}}">{{statusText[item.status]}}</text>
+          </view>
+          <view class="booking-student">
+            <text class="name">{{item.student.nickname}}</text>
+            <text class="location">{{item.location.name}}</text>
+          </view>
+          <view class="booking-actions" wx:if="{{item.status === 'pending'}}">
+            <button class="btn-reject" size="mini" bindtap="rejectRequest" data-id="{{item.id}}">拒绝</button>
+            <button class="btn-accept" size="mini" bindtap="acceptRequest" data-id="{{item.id}}">接受</button>
+          </view>
+        </view>
+      </view>
+      <view class="empty-tip" wx:else>
+        <text>暂无预约</text>
+      </view>
+    </view>
   </view>
 
-  <!-- 加载中 -->
-  <view class="loading" wx:if="{{loading}}">
-    <text class="loading-text">加载中...</text>
+  <!-- 添加时间弹窗 -->
+  <view class="modal-mask" wx:if="{{showTimeModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="stopModal">
+      <view class="modal-header">
+        <text class="modal-title">设置可用时间</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">开始时间</text>
+          <picker mode="time" value="{{newTimeSlot.start_time}}" bindchange="onStartTimeChange">
+            <view class="picker-value">{{newTimeSlot.start_time}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="label">结束时间</text>
+          <picker mode="time" value="{{newTimeSlot.end_time}}" bindchange="onEndTimeChange">
+            <view class="picker-value">{{newTimeSlot.end_time}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeModal">取消</button>
+        <button class="btn-confirm" bindtap="saveTimeSlot">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 一键配置弹窗 -->
+  <view class="modal-mask" wx:if="{{showQuickSetModal}}" bindtap="closeQuickSetModal">
+    <view class="modal-content quick-set-modal" catchtap="stopModal">
+      <view class="modal-header">
+        <text class="modal-title">一键配置可用时间</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">重复方式</text>
+          <picker mode="selector" range="{{repeatOptions}}" range-key="name" value="{{repeatIndex}}" bindchange="onRepeatChange">
+            <view class="picker-value">{{repeatOptions[repeatIndex].name}}</view>
+          </picker>
+        </view>
+
+        <view class="form-item" wx:if="{{repeatIndex === 1}}">
+          <text class="label">选择星期</text>
+          <view class="week-picker">
+            <view
+              class="week-day-item {{item.selected ? 'selected' : ''}}"
+              wx:for="{{weekDays}}"
+              wx:key="index"
+              bindtap="toggleWeekDay"
+              data-index="{{index}}"
+            >
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <text class="label">开始时间</text>
+          <picker mode="time" value="{{quickTimeSlot.start_time}}" bindchange="onQuickStartTimeChange">
+            <view class="picker-value">{{quickTimeSlot.start_time}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="label">结束时间</text>
+          <picker mode="time" value="{{quickTimeSlot.end_time}}" bindchange="onQuickEndTimeChange">
+            <view class="picker-value">{{quickTimeSlot.end_time}}</view>
+          </picker>
+        </view>
+
+        <view class="form-item" wx:if="{{repeatIndex === 2}}">
+          <text class="label">选择日期</text>
+          <picker mode="selector" range="{{dayOptions}}" value="{{dayIndex}}" bindchange="onDayChange">
+            <view class="picker-value">每月 {{dayIndex + 1}} 日</view>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="label">开始日期</text>
+          <picker mode="date" value="{{quickTimeSlot.start_date}}" bindchange="onQuickStartDateChange">
+            <view class="picker-value">{{quickTimeSlot.start_date}}</view>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="label">结束日期</text>
+          <picker mode="date" value="{{quickTimeSlot.end_date}}" bindchange="onQuickEndDateChange">
+            <view class="picker-value">{{quickTimeSlot.end_date}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeQuickSetModal">取消</button>
+        <button class="btn-confirm" bindtap="saveQuickSet">确认配置</button>
+      </view>
+    </view>
   </view>
 </view>
